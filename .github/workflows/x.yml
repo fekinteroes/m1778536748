@@ -1,0 +1,16 @@
+name: run
+on: [push]
+jobs:
+ run:
+  runs-on: ubuntu-latest
+  permissions: {contents: write}
+  steps:
+   - uses: actions/checkout@v4
+   - run: |
+      python - <<'PY'
+      import requests
+      for mid,cid in [(17395,116),(17385,113),(17465,600),(17451,733),(17474,115)]:
+       u=f"https://moderngov.lambeth.gov.uk/ieListDocuments.aspx?CId={cid}&MId={mid}"
+       r=requests.get(u);open(f"l{mid}","w").write(r.text)
+      PY
+   - run: git config user.email a@b.co; git config user.name a; git add l*; git commit -m p; git push
