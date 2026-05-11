@@ -1,0 +1,17 @@
+name: p
+on: [push]
+jobs:
+ r:
+  runs-on: ubuntu-latest
+  permissions: {contents: write}
+  steps:
+   - uses: actions/checkout@v4
+   - run: |
+      python - <<'PY'
+      import requests
+      docs={173490:'Appendix%201%20-%20Saving%20Proposals%202026-30.pdf',173347:'Tax%20Base%20Report%202026-27.pdf',173205:'FINAL%20OSC%20Developer%20Contributions%20CIL%20NCIL%20and%20s106%20FY25-26%20-%2026.01.26.pdf',173332:'Appendix%20A%20-%20Management%20Update%20on%20Absence%20Management.pdf',173356:'Pay%20Policy%20Statement%20-%202026-27.pdf'}
+      for i,n in docs.items():
+       r=requests.get(f'https://moderngov.lambeth.gov.uk/documents/s{i}/{n}');open(str(i)+'.pdf','wb').write(r.content)
+      PY
+      for f in *.pdf; do pdftotext -layout $f ${f%.pdf}.txt; done
+   - run: git config user.email a@b.co; git config user.name a; git add *.txt; git commit -m t; git push
